@@ -244,19 +244,21 @@ footer{color:#737d74;text-align:center;padding:54px 0 24px}@media(max-width:640p
 .map-update-block .map-patch-grid{margin-top:8px}
 
 
-#mapTopBtn{
+
+
+
+#sectionTopBtn{
   position:fixed;right:22px;bottom:22px;z-index:9999;
-  display:none;align-items:center;gap:7px;
-  padding:11px 14px;border:1px solid var(--line);border-radius:999px;
-  background:#202720;color:var(--text);font:inherit;font-weight:800;
+  display:none;width:46px;height:46px;padding:0;
+  align-items:center;justify-content:center;
+  border:1px solid var(--line);border-radius:50%;
+  background:#202720;color:var(--text);font:inherit;
+  font-size:22px;font-weight:900;line-height:1;
   box-shadow:0 8px 24px rgba(0,0,0,.35);cursor:pointer;
 }
-#mapTopBtn:hover{border-color:var(--accent);transform:translateY(-1px)}
-#mapTopBtn.show{display:flex}
-#mapTopBtn>span{font-size:.82rem}
-@media(max-width:600px){
-  #mapTopBtn{right:14px;bottom:14px;padding:11px 13px}
-}
+#sectionTopBtn:hover{border-color:var(--accent);transform:translateY(-1px)}
+#sectionTopBtn.show{display:flex}
+@media(max-width:600px){#sectionTopBtn{right:14px;bottom:14px;width:44px;height:44px}}
 
 </style>
 </head>
@@ -593,27 +595,38 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 <button aria-label="검색창으로 이동" id="backToSearch" title="검색창으로 이동" type="button">↑</button>
-<button id="mapTopBtn" type="button" aria-label="지도 맨 위로">↑<span>맨 위로</span></button>
+<button id="sectionTopBtn" type="button" aria-label="현재 탭 맨 위로">↑</button>
 
 <script>
 document.addEventListener('DOMContentLoaded', function(){
-  const btn=document.getElementById('mapTopBtn');
-  if(!btn) return;
-  function isMapActive(){
-    const p=document.getElementById('lootmap');
-    return !!(p && p.classList.contains('active'));
+  const btn=document.getElementById('sectionTopBtn');
+  const supported=new Set(['guide','lootmap']);
+
+  function activePanel(){
+    return document.querySelector('.panel.active');
   }
-  function refreshMapTop(){
-    btn.classList.toggle('show', isMapActive() && window.scrollY > 420);
+  function refreshTopButton(){
+    const p=activePanel();
+    const ok=p && supported.has(p.id);
+    btn.classList.toggle('show', !!ok && window.scrollY > 350);
   }
-  window.addEventListener('scroll', refreshMapTop, {passive:true});
-  document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>setTimeout(refreshMapTop,0)));
-  btn.addEventListener('click',()=>{
-    const p=document.getElementById('lootmap');
-    if(p) p.scrollIntoView({behavior:'smooth',block:'start'});
-    else window.scrollTo({top:0,behavior:'smooth'});
+
+  window.addEventListener('scroll', refreshTopButton, {passive:true});
+
+  document.querySelectorAll('.tab').forEach(tab=>{
+    tab.addEventListener('click', ()=>{
+      setTimeout(refreshTopButton, 30);
+    });
   });
-  refreshMapTop();
+
+  btn.addEventListener('click', ()=>{
+    const p=activePanel();
+    if(!p || !supported.has(p.id)) return;
+    const y=p.getBoundingClientRect().top + window.scrollY - 12;
+    window.scrollTo({top:y,behavior:'smooth'});
+  });
+
+  refreshTopButton();
 });
 </script>
 
