@@ -274,6 +274,36 @@ footer{color:#737d74;text-align:center;padding:54px 0 24px}@media(max-width:640p
   #modSearch{max-width:none}
 }
 
+
+/* 모든 탭 전용 맨 위로 버튼 */
+.panelTopBtn{
+  display:none !important;
+  position:fixed !important;
+  right:22px !important;
+  bottom:22px !important;
+  z-index:100000 !important;
+  width:46px !important;
+  height:46px !important;
+  padding:0 !important;
+  align-items:center !important;
+  justify-content:center !important;
+  border:1px solid var(--line) !important;
+  border-radius:50% !important;
+  background:#202720 !important;
+  color:var(--text) !important;
+  font:inherit !important;
+  font-size:22px !important;
+  font-weight:900 !important;
+  line-height:1 !important;
+  box-shadow:0 8px 24px rgba(0,0,0,.38) !important;
+  cursor:pointer !important;
+}
+.panel.active .panelTopBtn{display:flex !important}
+.panelTopBtn:hover{border-color:var(--accent) !important;transform:translateY(-1px)}
+@media(max-width:600px){
+  .panelTopBtn{right:14px !important;bottom:14px !important;width:44px !important;height:44px !important}
+}
+
 </style>
 </head>
 <body>
@@ -294,6 +324,7 @@ footer{color:#737d74;text-align:center;padding:54px 0 24px}@media(max-width:640p
 <button class="tab" data-panel="lootmap">🗺️ 지도</button>
 <button class="tab" data-panel="mods">모드 목록</button></div>
 <div class="panel" id="guide">
+<button class="panelTopBtn" type="button" aria-label="guide 탭 맨 위로">↑</button>
 <div class="notice"><b>📌 처음 접속한 분께</b><br/>모드 이름을 몰라도 괜찮습니다. 엄보이드에서 실제로 필요한 행동과 진행 방법만 정리했습니다.</div>
 <section class="goal">
 <span class="tag">집결 목표</span>
@@ -377,6 +408,7 @@ footer{color:#737d74;text-align:center;padding:54px 0 24px}@media(max-width:640p
 </div>
 
 <div class="panel" id="mods">
+<button class="panelTopBtn" type="button" aria-label="mods 탭 맨 위로">↑</button>
 <div class="notice"><b>📦 모드 목록</b><br/>게임 가이드에서는 몰입을 위해 모드 이름을 표시하지 않습니다. 설치된 모드의 이름이나 출처가 궁금할 때 이 탭을 확인하세요.</div>
 <h2 class="section-title">전체 모드 74개</h2>
 <div class="mod-search-wrap">
@@ -389,6 +421,7 @@ footer{color:#737d74;text-align:center;padding:54px 0 24px}@media(max-width:640p
 </div>
 
 <div class="panel" id="lootmap">
+<button class="panelTopBtn" type="button" aria-label="lootmap 탭 맨 위로">↑</button>
 <div class="notice"><b>🗺️ 파밍 지도 BETA</b><br/><b>바닐라 B42 전 지역 + 엄보이드 모드맵</b>을 지역별로 정리했습니다. 지역을 선택하면 가장 먼저 <b>전체 지도와 지역 특징</b>이 표시되고, 그 아래에 검증된 파밍 장소가 이어집니다. 정확한 좌표를 검증하지 못한 장소는 임의 좌표를 넣지 않았습니다. 아이템은 확정 스폰이 아닙니다.</div>
 <div class="loot-toolbar" id="lootFilters">
 <button class="loot-filter active" data-loot="all">전체</button><button class="loot-filter" data-loot="guns">🔫 총기·탄약</button><button class="loot-filter" data-loot="generator">⚡ 발전기 후보</button><button class="loot-filter" data-loot="fuel">⛽ 연료</button><button class="loot-filter" data-loot="medical">💊 의료</button><button class="loot-filter" data-loot="food">🥫 식량</button><button class="loot-filter" data-loot="tools">🔧 공구</button><button class="loot-filter" data-loot="police">🚓 경찰서</button><button class="loot-filter" data-loot="fire">🚒 소방서</button>
@@ -539,6 +572,7 @@ footer{color:#737d74;text-align:center;padding:54px 0 24px}@media(max-width:640p
 </section></div></div>
 
 <div class="panel active" id="patchnotes">
+<button class="panelTopBtn" type="button" aria-label="patchnotes 탭 맨 위로">↑</button>
 <div class="patch-head">
 <div>
 <div class="eyebrow">UMBOID UPDATE</div>
@@ -577,81 +611,177 @@ footer{color:#737d74;text-align:center;padding:54px 0 24px}@media(max-width:640p
 </div>
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-  const search=document.getElementById('search'), status=document.getElementById('searchStatus'), resultsBox=document.getElementById('searchResults'), noResults=document.getElementById('noResults'), backToSearch=document.getElementById('backToSearch');
-  const tabs=Array.from(document.querySelectorAll('.tab')), panels=Array.from(document.querySelectorAll('.panel'));
-  const normalize=s=>(s||'').toLowerCase().replace(/\s+/g,' ').trim();
-  function activatePanel(id){tabs.forEach(t=>t.classList.toggle('active',t.dataset.panel===id));panels.forEach(p=>p.classList.toggle('active',p.id===id));}
-  function labelFor(el){return el.querySelector('h3,h4')?.textContent?.trim() || (el.tagName==='TR' ? (el.children[1]?.textContent||el.textContent).trim() : el.textContent.trim().slice(0,70));}
-  function panelName(id){return ({guide:'게임 가이드',mods:'모드 목록',lootmap:'파밍 지도',patchnotes:'패치노트'})[id]||id;}
-  function buildIndex(){
-    const items=[];
-    document.querySelectorAll('#guide .card, #guide .goal, #mods tbody tr, #lootmap .loot-place, #patchnotes .patch-mod, #patchnotes .patch-section').forEach((el,i)=>{
-      const panel=el.closest('.panel'); if(!panel) return;
-      const text=normalize(el.textContent+' '+(el.dataset.key||'')+' '+(el.dataset.search||''));
-      if(text) items.push({el,panel:panel.id,text,label:labelFor(el),id:i});
-    }); return items;
+  const search = document.getElementById('search');
+  const status = document.getElementById('searchStatus');
+  const resultsBox = document.getElementById('searchResults');
+  const noResults = document.getElementById('noResults');
+  const tabs = Array.from(document.querySelectorAll('.tab'));
+  const panels = Array.from(document.querySelectorAll('.panel'));
+  const normalize = s => (s || '').toLowerCase().replace(/\s+/g, ' ').trim();
+
+  function activatePanel(id) {
+    tabs.forEach(t => t.classList.toggle('active', t.dataset.panel === id));
+    panels.forEach(p => p.classList.toggle('active', p.id === id));
+    window.scrollTo({top: 0, behavior: 'auto'});
   }
-  const searchIndex=buildIndex();
-  function runSearch(raw){
-    const q=normalize(raw); resultsBox.innerHTML='';
-    if(!q){status.style.display='none';resultsBox.style.display='none';noResults.style.display='none';return;}
-    const matches=searchIndex.filter(x=>x.text.includes(q)).slice(0,12);
-    status.style.display='block'; status.textContent=`“${raw}” 검색 결과 ${matches.length}개${matches.length===12?' 이상':''}`;
-    noResults.style.display=matches.length?'none':'block'; resultsBox.style.display=matches.length?'block':'none';
-    matches.forEach(m=>{const b=document.createElement('button');b.className='search-result';b.type='button';b.innerHTML=`<b>${m.label}</b><small>${panelName(m.panel)}에서 보기</small>`;b.onclick=()=>{activatePanel(m.panel);resultsBox.style.display='none';requestAnimationFrame(()=>{m.el.scrollIntoView({behavior:'smooth',block:'center'});m.el.classList.add('search-hit');setTimeout(()=>m.el.classList.remove('search-hit'),1600);});};resultsBox.appendChild(b);});
+
+  function labelFor(el) {
+    return el.querySelector('h3,h4')?.textContent?.trim()
+      || (el.tagName === 'TR'
+        ? (el.children[1]?.textContent || el.textContent).trim()
+        : el.textContent.trim().slice(0, 70));
   }
-  search?.addEventListener('input',()=>runSearch(search.value));
-  search?.addEventListener('search',()=>runSearch(search.value));
-  tabs.forEach(tab=>tab.addEventListener('click',()=>activatePanel(tab.dataset.panel)));
-  backToSearch?.addEventListener('click',()=>{search?.scrollIntoView({behavior:'smooth',block:'center'});setTimeout(()=>search?.focus(),350);});
-  window.addEventListener('scroll',()=>{if(backToSearch&&search)backToSearch.style.display=search.getBoundingClientRect().bottom<0?'inline-flex':'none';},{passive:true});
 
-  let selectedLoot='all',selectedMap='all'; const lootBtns=Array.from(document.querySelectorAll('.loot-filter')),mapBtns=Array.from(document.querySelectorAll('.map-filter')),lootPlaces=Array.from(document.querySelectorAll('.loot-place')),lootEmpty=document.getElementById('lootEmpty'),lootSearch=document.getElementById('lootSearch'),lootSearchStatus=document.getElementById('lootSearchStatus'),regionTitles=Array.from(document.querySelectorAll('.loot-region-title'));
-  function applyLootFilters(){const q=normalize(lootSearch?.value||'');let shown=0;const visibleMaps=new Set();lootPlaces.forEach(el=>{const mapOk=selectedMap==='all'||el.dataset.map===selectedMap,tags=(el.dataset.loot||'').split(/\s+/),lootOk=el.classList.contains('map-overview')||el.classList.contains('map-data-guide')||selectedLoot==='all'||tags.includes(selectedLoot),searchText=normalize(el.textContent+' '+(el.dataset.search||'')),searchOk=!q||searchText.includes(q),show=mapOk&&lootOk&&searchOk;el.hidden=!show;if(show){shown++;visibleMaps.add(el.dataset.map);}});regionTitles.forEach(h=>{const r=h.dataset.region;if(r==='mods'){const modMaps=['iris','constown','raven','fort','ashen','anruisi','westexp','flaherty'];h.style.display=modMaps.some(x=>visibleMaps.has(x))?'':'none';}else h.style.display=visibleMaps.has(r)?'':'none';});if(lootEmpty)lootEmpty.style.display=shown?'none':'block';if(lootSearchStatus){const region=selectedMap==='all'?'전체 지역':mapBtns.find(b=>b.dataset.map===selectedMap)?.textContent.trim();lootSearchStatus.textContent=q?`“${lootSearch.value}” · ${region}에서 ${shown}개 장소`:`${region} · ${shown}개 장소 표시`;}}
-  lootBtns.forEach(b=>b.addEventListener('click',()=>{selectedLoot=b.dataset.loot;lootBtns.forEach(x=>x.classList.toggle('active',x===b));applyLootFilters();}));
-  mapBtns.forEach(b=>b.addEventListener('click',()=>{selectedMap=b.dataset.map;mapBtns.forEach(x=>x.classList.toggle('active',x===b));applyLootFilters();}));
-  lootSearch?.addEventListener('input',applyLootFilters); applyLootFilters();
-});
-</script>
-<button aria-label="검색창으로 이동" id="backToSearch" title="검색창으로 이동" type="button">↑</button>
-<button id="allTopBtn" type="button" aria-label="맨 위로">↑</button>
-
-<script>
-document.addEventListener('DOMContentLoaded', function(){
-  const topBtn=document.getElementById('allTopBtn');
-
-  function refreshTopBtn(){
-    topBtn.classList.toggle('show', window.scrollY > 350);
+  function panelName(id) {
+    return ({guide:'게임 가이드', mods:'모드 목록', lootmap:'지도', patchnotes:'패치노트'})[id] || id;
   }
-  window.addEventListener('scroll', refreshTopBtn, {passive:true});
-  document.querySelectorAll('.tab').forEach(tab=>{
-    tab.addEventListener('click', ()=>setTimeout(refreshTopBtn, 20));
-  });
-  topBtn.addEventListener('click', ()=>{
-    window.scrollTo({top:0,behavior:'smooth'});
-  });
-  refreshTopBtn();
 
-  const input=document.getElementById('modSearch');
-  const count=document.getElementById('modSearchCount');
-  const modsPanel=document.getElementById('mods');
-  if(input && modsPanel){
-    // 현재 모드 목록 구조의 각 행을 검색 대상으로 사용
-    const rows=[...modsPanel.querySelectorAll('tbody tr')];
-    function runModSearch(){
-      const q=input.value.trim().toLowerCase();
-      let shown=0;
-      rows.forEach(row=>{
-        const ok=!q || row.textContent.toLowerCase().includes(q);
-        row.style.display=ok?'':'none';
-        if(ok) shown++;
-      });
-      count.textContent=q ? `${shown}개 모드 검색됨` : `전체 ${rows.length}개 모드`;
+  function buildIndex() {
+    const items = [];
+    document.querySelectorAll(
+      '#guide .card, #guide .goal, #mods tbody tr, #lootmap .loot-place, #patchnotes .patch-mod, #patchnotes .patch-section'
+    ).forEach((el, i) => {
+      const panel = el.closest('.panel');
+      if (!panel) return;
+      const text = normalize(el.textContent + ' ' + (el.dataset.key || '') + ' ' + (el.dataset.search || ''));
+      if (text) items.push({el, panel:panel.id, text, label:labelFor(el), id:i});
+    });
+    return items;
+  }
+
+  const searchIndex = buildIndex();
+
+  function runSearch(raw) {
+    const q = normalize(raw);
+    resultsBox.innerHTML = '';
+    if (!q) {
+      status.style.display = 'none';
+      resultsBox.style.display = 'none';
+      noResults.style.display = 'none';
+      return;
     }
-    input.addEventListener('input', runModSearch);
-    runModSearch();
+    const matches = searchIndex.filter(x => x.text.includes(q)).slice(0, 12);
+    status.style.display = 'block';
+    status.textContent = `“${raw}” 검색 결과 ${matches.length}개${matches.length === 12 ? ' 이상' : ''}`;
+    noResults.style.display = matches.length ? 'none' : 'block';
+    resultsBox.style.display = matches.length ? 'block' : 'none';
+
+    matches.forEach(m => {
+      const b = document.createElement('button');
+      b.className = 'search-result';
+      b.type = 'button';
+      b.innerHTML = `<b>${m.label}</b><small>${panelName(m.panel)}에서 보기</small>`;
+      b.onclick = () => {
+        activatePanel(m.panel);
+        resultsBox.style.display = 'none';
+        requestAnimationFrame(() => {
+          m.el.scrollIntoView({behavior:'smooth', block:'center'});
+          m.el.classList.add('search-hit');
+          setTimeout(() => m.el.classList.remove('search-hit'), 1600);
+        });
+      };
+      resultsBox.appendChild(b);
+    });
   }
+
+  search?.addEventListener('input', () => runSearch(search.value));
+  search?.addEventListener('search', () => runSearch(search.value));
+  tabs.forEach(tab => tab.addEventListener('click', () => activatePanel(tab.dataset.panel)));
+
+  // 지도 검색/필터
+  let selectedLoot = 'all';
+  let selectedMap = 'all';
+  const lootBtns = Array.from(document.querySelectorAll('.loot-filter'));
+  const mapBtns = Array.from(document.querySelectorAll('.map-filter'));
+  const lootPlaces = Array.from(document.querySelectorAll('.loot-place'));
+  const lootEmpty = document.getElementById('lootEmpty');
+  const lootSearch = document.getElementById('lootSearch');
+  const lootSearchStatus = document.getElementById('lootSearchStatus');
+  const regionTitles = Array.from(document.querySelectorAll('.loot-region-title'));
+
+  function applyLootFilters() {
+    const q = normalize(lootSearch?.value || '');
+    let shown = 0;
+    const visibleMaps = new Set();
+
+    lootPlaces.forEach(el => {
+      const mapOk = selectedMap === 'all' || el.dataset.map === selectedMap;
+      const tags = (el.dataset.loot || '').split(/\s+/);
+      const lootOk = el.classList.contains('map-overview')
+        || el.classList.contains('map-data-guide')
+        || selectedLoot === 'all'
+        || tags.includes(selectedLoot);
+      const searchText = normalize(el.textContent + ' ' + (el.dataset.search || ''));
+      const searchOk = !q || searchText.includes(q);
+      const show = mapOk && lootOk && searchOk;
+      el.hidden = !show;
+      if (show) {
+        shown++;
+        visibleMaps.add(el.dataset.map);
+      }
+    });
+
+    regionTitles.forEach(h => {
+      const r = h.dataset.region;
+      if (r === 'mods') {
+        const modMaps = ['iris','constown','raven','fort','ashen','anruisi','westexp','flaherty'];
+        h.style.display = modMaps.some(x => visibleMaps.has(x)) ? '' : 'none';
+      } else {
+        h.style.display = visibleMaps.has(r) ? '' : 'none';
+      }
+    });
+
+    if (lootEmpty) lootEmpty.style.display = shown ? 'none' : 'block';
+    if (lootSearchStatus) {
+      const region = selectedMap === 'all'
+        ? '전체 지역'
+        : mapBtns.find(b => b.dataset.map === selectedMap)?.textContent.trim();
+      lootSearchStatus.textContent = q
+        ? `“${lootSearch.value}” · ${region}에서 ${shown}개 장소`
+        : `${region} · ${shown}개 장소 표시`;
+    }
+  }
+
+  lootBtns.forEach(b => b.addEventListener('click', () => {
+    selectedLoot = b.dataset.loot;
+    lootBtns.forEach(x => x.classList.toggle('active', x === b));
+    applyLootFilters();
+  }));
+
+  mapBtns.forEach(b => b.addEventListener('click', () => {
+    selectedMap = b.dataset.map;
+    mapBtns.forEach(x => x.classList.toggle('active', x === b));
+    applyLootFilters();
+  }));
+
+  lootSearch?.addEventListener('input', applyLootFilters);
+  applyLootFilters();
+
+  // 모드 목록 전용 검색
+  const modSearch = document.getElementById('modSearch');
+  const modSearchCount = document.getElementById('modSearchCount');
+  const modRows = Array.from(document.querySelectorAll('#mods tbody tr'));
+
+  function applyModSearch() {
+    const q = normalize(modSearch?.value || '');
+    let shown = 0;
+    modRows.forEach(row => {
+      const visible = !q || normalize(row.textContent).includes(q);
+      row.style.display = visible ? '' : 'none';
+      if (visible) shown++;
+    });
+    if (modSearchCount) {
+      modSearchCount.textContent = q ? `${shown}개 모드 검색됨` : `전체 ${modRows.length}개 모드`;
+    }
+  }
+
+  modSearch?.addEventListener('input', applyModSearch);
+  applyModSearch();
+
+  // 모든 탭의 ↑ 버튼
+  document.querySelectorAll('.panelTopBtn').forEach(btn => {
+    btn.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+  });
 });
 </script>
-
 </body></html>
