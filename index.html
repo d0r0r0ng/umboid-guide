@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+
+<html lang="ko">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>엄보이드 서버 가이드</title>
+<style>
+:root{--bg:#0d100f;--panel:#171b19;--panel2:#202622;--text:#eef1ec;--muted:#aeb7ae;--accent:#c9d86a;--warn:#e2b866;--danger:#d97567;--line:#303831}
+*{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif;background:radial-gradient(circle at top,#20261f 0,#0d100f 40%);color:var(--text);line-height:1.6}
+a{color:inherit}.wrap{max-width:1080px;margin:auto;padding:24px}.hero{padding:52px 0 26px}.eyebrow{color:var(--accent);font-weight:800;letter-spacing:.14em;font-size:.78rem}.hero h1{font-size:clamp(2.2rem,7vw,4.6rem);margin:.1em 0;line-height:1}.hero p{color:var(--muted);max-width:700px}.badge{display:inline-block;border:1px solid var(--line);background:#141815;padding:6px 10px;border-radius:999px;color:var(--muted);font-size:.85rem;margin-right:6px}.search{width:100%;margin:24px 0;padding:16px 18px;border:1px solid var(--line);border-radius:14px;background:#111512;color:white;font-size:1rem}.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:24px}.tab{border:1px solid var(--line);background:var(--panel);color:var(--text);padding:9px 13px;border-radius:10px;cursor:pointer}.tab.active{background:var(--accent);color:#171a13;border-color:var(--accent);font-weight:800}.notice{border-left:4px solid var(--warn);background:#211e17;padding:14px 16px;border-radius:8px;margin:18px 0 28px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(285px,1fr));gap:16px}.card{background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 10px 30px #0003}.card h3{margin:0 0 6px}.card p{color:var(--muted);margin:8px 0}.tag{font-size:.75rem;color:#151811;background:var(--accent);padding:3px 8px;border-radius:999px;font-weight:800}.steps{counter-reset:s}.steps div{position:relative;padding:10px 0 10px 42px;color:var(--muted)}.steps div:before{counter-increment:s;content:counter(s);position:absolute;left:0;top:9px;width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#2c342d;color:var(--accent);font-weight:900}.tip{margin-top:14px;padding:12px;border-radius:10px;background:#101411;border:1px dashed #465047;color:#d8ded8}.danger{border-color:#66403b}.danger .tag{background:var(--danger);color:white}.section-title{margin:42px 0 14px;font-size:1.5rem}.modlist{width:100%;border-collapse:collapse;background:var(--panel);border-radius:14px;overflow:hidden}.modlist th,.modlist td{padding:12px 14px;border-bottom:1px solid var(--line);text-align:left}.modlist th{color:var(--accent)}.modlist td{color:var(--muted)}.goal{margin:8px 0 30px;padding:22px;background:linear-gradient(180deg,#1b211e,#111512);border:1px solid var(--line);border-radius:18px}
+.goal h2{margin:0 0 8px}.goal p{color:var(--muted)}
+.maps{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}.mapbox{background:#0e120f;border:1px solid var(--line);border-radius:14px;overflow:hidden}.mapbox img{width:100%;display:block}.mapcap{padding:12px 14px;color:var(--muted)}.mapcap b{color:var(--text)}
+.panel{display:none}.panel.active{display:block}
+.modlink{color:var(--accent);text-decoration:none}.modlink:hover{text-decoration:underline}
+footer{color:#737d74;text-align:center;padding:54px 0 24px}@media(max-width:640px){.maps{grid-template-columns:1fr}.wrap{padding:16px}.hero{padding-top:34px}.modlist th:nth-child(3),.modlist td:nth-child(3){display:none}}
+
+/* v0.4 readability */
+.card h3{line-height:1.35;margin-bottom:10px}
+.card p{line-height:1.75;margin:8px 0 14px;word-break:keep-all}
+.steps{display:flex;flex-direction:column;gap:9px;margin-top:12px}
+.steps>div{line-height:1.65;padding:10px 12px;background:rgba(255,255,255,.025);border-radius:8px;word-break:keep-all}
+.tip{line-height:1.65;margin-top:12px;padding:11px 13px;word-break:keep-all}
+.goal p,.notice,.mapcap{line-height:1.7;word-break:keep-all}
+.modlist td,.modlist th{line-height:1.5;vertical-align:top}
+.section-title{margin-top:32px;margin-bottom:18px}
+@media(max-width:640px){
+  .card{padding:18px}
+  .card p,.steps>div,.tip{font-size:14px}
+  .steps{gap:7px}
+}
+
+
+/* v0.5 layout fixes */
+.tabs{align-items:stretch;overflow-x:auto;overflow-y:visible;padding-bottom:2px}
+.tab{
+  min-height:44px !important;
+  height:auto !important;
+  padding:10px 16px !important;
+  line-height:1.35 !important;
+  white-space:nowrap !important;
+  overflow:visible !important;
+  text-overflow:clip !important;
+  flex:0 0 auto;
+}
+.tag{
+  display:inline-flex !important;
+  align-items:center;
+  min-height:26px;
+  height:auto !important;
+  padding:5px 10px !important;
+  line-height:1.25 !important;
+  white-space:nowrap !important;
+  overflow:visible !important;
+}
+.card h3,.goal h2,.section-title{
+  overflow:visible !important;
+  text-overflow:clip !important;
+}
+.mapbox img{
+  width:100%;
+  height:auto;
+  object-fit:contain;
+  background:#d7d6c4;
+}
+@media(max-width:640px){
+  .tabs{gap:6px}
+  .tab{font-size:14px;padding:9px 13px !important}
+  .tag{font-size:12px}
+}
+
+
+/* Step number clipping fix */
+.steps > div{
+  position:relative;
+  padding-left:46px !important;
+  min-height:42px;
+}
+.steps > div::before{
+  position:absolute !important;
+  left:12px !important;
+  top:10px !important;
+  width:24px !important;
+  min-width:24px !important;
+  height:24px !important;
+  min-height:24px !important;
+  flex:none !important;
+  display:flex !important;
+  align-items:center !important;
+  justify-content:center !important;
+  box-sizing:border-box !important;
+  line-height:24px !important;
+  padding:0 !important;
+  overflow:visible !important;
+  white-space:nowrap !important;
+  border-radius:50% !important;
+  font-size:14px !important;
+  font-weight:800 !important;
+}
+
+
+.guide-shot{margin:14px 0 16px;border:1px solid var(--line);border-radius:12px;overflow:hidden;background:#0b0e0c}
+.guide-shot img{display:block;width:100%;height:auto;max-height:520px;object-fit:contain;background:#090b0a}
+.guide-shot figcaption{padding:10px 12px;color:var(--muted);font-size:13px;line-height:1.55}
+.guide-shot.wide img{max-height:600px}
+.shot-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:14px 0}
+.shot-grid .guide-shot{margin:0}
+@media(max-width:700px){.shot-grid{grid-template-columns:1fr}.guide-shot img{max-height:none}}
+
+
+/* Search navigation feedback */
+.card.search-hit{
+  outline:2px solid var(--accent);
+  outline-offset:3px;
+  box-shadow:0 0 0 6px rgba(201,216,106,.08);
+  transition:outline-color .25s ease, box-shadow .25s ease;
+}
+
+
+/* Back-to-search floating button */
+#backToSearch{
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  z-index:9999;
+  display:none;
+  align-items:center;
+  gap:7px;
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:10px 14px;
+  background:#1d241f;
+  color:var(--text);
+  font:inherit;
+  font-weight:800;
+  cursor:pointer;
+  box-shadow:0 8px 24px rgba(0,0,0,.35);
+}
+#backToSearch:hover{border-color:var(--accent);transform:translateY(-1px)}
+@media(max-width:640px){
+  #backToSearch{right:12px;bottom:12px;padding:9px 12px;font-size:13px}
+}
+
+
+/* v3.8 Patch Notes */
+.patch-head{display:flex;justify-content:space-between;gap:14px;align-items:flex-end;margin:4px 0 22px}
+.patch-date{font-size:.86rem;color:var(--muted);border:1px solid var(--line);padding:6px 10px;border-radius:999px;white-space:nowrap}
+.patch-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px;margin:14px 0 28px}
+.patch-mod{overflow:hidden;padding:0}
+.patch-mod img{width:100%;height:150px;object-fit:cover;display:block;background:#0b0d0b;border-bottom:1px solid var(--line)}
+.patch-mod .patch-body{padding:16px}
+.patch-mod h3{font-size:1rem;margin:0 0 7px}
+.patch-mod p{font-size:.9rem;line-height:1.55;margin:0 0 12px}
+.patch-link{display:inline-block;font-size:.8rem;color:var(--accent);text-decoration:none;border:1px solid #465047;border-radius:8px;padding:6px 9px}
+.patch-link:hover{background:#202720}
+.patch-block{margin:0 0 24px;padding:20px;background:linear-gradient(180deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:16px}
+.patch-block h3{margin:0 0 12px}
+.change-row{display:grid;grid-template-columns:120px 1fr;gap:14px;padding:12px 0;border-bottom:1px solid var(--line)}
+.change-row:last-child{border-bottom:0}
+.change-label{font-weight:800;color:var(--accent)}
+.change-label.remove{color:#e9897f}
+.change-label.balance{color:#e7c66b}
+.change-text{color:var(--muted);line-height:1.55}
+.balance-pills{display:flex;flex-wrap:wrap;gap:10px;margin-top:12px}
+.balance-pill{flex:1 1 210px;padding:14px;border-radius:12px;background:#101411;border:1px solid var(--line)}
+.balance-pill b{display:block;color:#fff;font-size:1.05rem;margin-bottom:4px}
+.balance-pill span{color:var(--muted);font-size:.86rem}
+@media(max-width:600px){
+  .patch-head{align-items:flex-start;flex-direction:column}
+  .patch-mod img{height:130px}
+  .change-row{grid-template-columns:1fr;gap:5px}
+}
+
+.patch-body.image-failed::before{
+  content:"STEAM WORKSHOP";
+  display:flex;align-items:center;justify-content:center;
+  height:118px;margin:-16px -16px 16px;
+  background:linear-gradient(135deg,#171d18,#263128);
+  border-bottom:1px solid var(--line);
+  color:#aab6ac;font-size:.78rem;font-weight:800;letter-spacing:.16em;
+}
+
+/* v3.10: patch-note images are embedded directly in this HTML */
+#patchnotes .patch-mod img{
+  width:100%;
+  height:180px;
+  object-fit:cover;
+  object-position:center;
+  display:block;
+  background:#0b0d0b;
+  border-bottom:1px solid var(--line);
+}
+@media(max-width:600px){
+  #patchnotes .patch-mod img{height:150px}
+}
+</style>
+<meta content="프로젝트 좀보이드 엄보이드 서버 가이드" name="description"/></head>
+<body>
+<div class="wrap">
+<header class="hero">
+<div class="eyebrow">PROJECT ZOMBOID B42.21 MULTIPLAYER</div>
+<h1>엄보이드</h1>
+<p>엄보이드에서 알아야 할 기능과 진행 방법을 빠르게 확인하는 플레이 가이드입니다. 게임 중 막히면 하고 싶은 행동을 검색하세요.</p>
+</header>
+<input class="search" id="search" placeholder="예: 배선, 치료제, 탈출, 저택..."/>
+<div id="searchStatus" style="display:none;margin:10px 0 4px;color:var(--muted);font-size:13px;line-height:1.5"></div>
+<div id="noResults" style="display:none;margin:18px 0;padding:18px;border:1px dashed var(--line);border-radius:12px;color:var(--muted);text-align:center">
+검색 결과가 없습니다.<br/>예: 차량, 쇠지렛대, 배선, 백신, 탈출, 특성
+</div>
+<div class="tabs">
+<button class="tab active" data-panel="guide">게임 가이드</button>
+<button class="tab" data-panel="mods">모드 목록</button>
+<button class="tab" data-panel="patchnotes">패치노트</button></div>
+<div class="panel active" id="guide">
+<div class="notice"><b>📌 처음 접속한 분께</b><br/>모드 이름을 몰라도 괜찮습니다. 엄보이드에서 실제로 필요한 행동과 진행 방법만 정리했습니다.</div>
+<section class="goal">
+<span class="tag">집결 목표</span>
+<h2>🏝️ 먼저 Iris Eyot에서 만나세요</h2>
+<p>각자 다른 곳에서 생존을 시작한 뒤<br/>장비와 차량을 확보해 <b>Iris Eyot</b>으로 모입니다.<br/><br/>이곳은 <b>최종 탈출지가 아니라<br/>모두가 합류하는 집결지</b>입니다.</p>
+<div class="maps">
+<figure class="mapbox"><img alt="Iris Eyot 전체 위치" src="images/site-image-01.jpg"/><figcaption class="mapcap"><b>1. 전체 지도에서 위치 확인</b><br/>에코 크릭과 콘스턴 사이 남쪽에 보이는 작은 원형 섬을 찾으세요.</figcaption></figure>
+<figure class="mapbox"><img alt="Iris Eyot 상세 위치" src="images/site-image-02.jpg"/><figcaption class="mapcap"><b>2. 최종 집결 위치</b><br/>강과 습지에 둘러싸인 원형 섬이 Iris Eyot입니다. 표시된 섬까지 도착하면 됩니다.</figcaption></figure>
+</div>
+</section>
+<section class="goal" style="margin-top:26px">
+<span class="tag">서버 설정</span>
+<h2>⚙️ 엄보이드 최종 플레이 설정</h2>
+<p>짧게 접속해도 진행한 만큼 세계에 변화가 남고,<br/>친구들과 합류해 녹스 카운티 탈출까지 이어갈 수 있도록 설정합니다.</p>
+<div class="steps">
+<div><b>좀비 리스폰</b> — OFF<br/><span style="color:var(--muted)">정리한 지역은 다음 접속에서도 정리된 상태가 유지되도록 합니다.</span></div>
+<div><b>호드 크기</b> — Normal</div>
+<div><b>호드 크기 변화</b> — Normal (20% ~ 100%)</div>
+<div><b>호드 발생 주기</b> — Normal (1.5 ~ 3.5일)</div>
+<div><b>호드 플레이어 추적</b> — Sometimes</div>
+<div><b>추가 스프린터</b> — OFF</div>
+<div><b>플레이어 주변 60타일 호드 생성 방지</b> — ON</div>
+<div><b>하루 길이</b> — 2시간</div>
+<div><b>수면 허용</b> — ON</div>
+<div><b>수면 필요</b> — ON<br/><span style="color:var(--muted)">접속 중인 인원이 함께 잠들어 밤 시간을 넘길 수 있도록 합니다.</span></div>
+<div><b>특수 방호복 좀비 출현</b> — 0.5</div>
+<div><b>완치제 획득 확률</b> — 35%</div>
+</div>
+</section>
+<h2 class="section-title">🔥 꼭 알아야 할 핵심 안내</h2>
+<section class="grid" id="cards">
+<article class="card" data-key="랜덤 스폰 시작 위치 무작위">
+<span class="tag">게임 시작</span><h3>🎲 시작 위치는 무작위입니다</h3>
+<p>모든 플레이어는 <b>녹스 카운티 전역의 무작위 위치</b>에서 시작합니다.<br/><br/>처음부터 함께 시작하지 않으므로 각자 생존 수단을 확보한 뒤 집결지를 향해 이동하세요.</p>
+<figure class="guide-shot wide"><img alt="랜덤 스폰 시작 화면" src="images/site-image-03.jpg"/><figcaption>▲ 실제 랜덤 스폰 시작 화면 예시</figcaption></figure>
+</article>
+<article class="card" data-key="배선 핫와이어 차량 시동">
+<span class="tag">차량</span><h3>🚗 차량 배선 따기</h3><p>열쇠가 없는 차량은<br/>직접 배선을 연결해 시동을 걸 수 있습니다.</p>
+<div class="steps"><div>운전석에 앉고 차량 메뉴에서 배선 따기를 선택합니다.</div><div>드라이버로 커버의 나사를 풉니다.</div><div>전선을 자른 뒤 같은 색의 배터리 선 2개를 먼저 연결합니다.</div><div>남은 선을 테스트해 스타터 선을 찾습니다. 테스트할 때마다 차량 배터리가 소모될 수 있습니다.</div><div>스타터 선을 연결된 배터리 선에 접촉시키면 시동이 걸립니다.</div></div>
+<div class="tip">⚠️ 스파크 반응을 확인하면서 진행하세요. 잘못된 선을 연결하면 실패하거나 불이익이 생길 수 있습니다.</div><div class="shot-grid">
+<figure class="guide-shot"><img alt="차량 배선 따기 덮개 단계" src="images/site-image-04.jpg"/><figcaption>1단계 — 덮개 나사를 풀어 배선에 접근합니다.</figcaption></figure>
+<figure class="guide-shot"><img alt="차량 배선 연결 단계" src="images/site-image-05.jpg"/><figcaption>2단계 — 전선을 자른 뒤 같은 색의 배터리 전선을 연결합니다.</figcaption></figure>
+</div></article>
+<article class="card" data-key="차량 문 락픽 자물쇠 쇠지렛대 빠루">
+<span class="tag">차량</span><h3>🔐 잠긴 차량 문 열기</h3><p>차량 열쇠가 없어도<br/>잠긴 문을 열 수 있습니다.</p>
+<div class="steps"><div><b>락픽</b>이 있다면 자물쇠 따기를 시도할 수 있습니다.</div><div>락픽이 없다면 <b>쇠지렛대</b>를 이용해 강제로 문을 열 수도 있습니다.</div><div>문을 연 뒤 열쇠가 없다면 배선 따기를 진행해 시동을 걸면 됩니다.</div></div>
+<div class="tip">차량을 발견하면 유리부터 깨기 전에 락픽이나 쇠지렛대 사용 가능 여부를 먼저 확인하세요.</div><figure class="guide-shot"><img alt="쇠지렛대로 차량 문 열기" src="images/site-image-06.jpg"/><figcaption>▲ 쇠지렛대를 이용해 잠긴 차량 문을 여는 화면</figcaption></figure></article>
+<article class="card danger" data-key="백신 치료제 감염 방호복 완치제 확률">
+<span class="tag">감염 치료</span><h3>💉 감염됐다고 끝이 아닙니다</h3>
+<p>특수 방호복 좀비를 처치하면<br/><b>좀비 감염 완치제</b>를 얻을 기회가 있습니다.</p>
+<div class="steps">
+<div><b>특수 방호복 좀비 출현 설정</b><br/>0.5</div>
+<div><b>완치제 획득 확률</b><br/>35%</div>
+</div>
+<div class="tip">💡 완치제는 감염을 치료하지만 영구 면역을 주지는 않습니다.<br/>다시 물리면 다시 감염될 수 있으니 발견하면 귀중하게 보관하세요.</div>
+</article>
+<article class="card" data-key="집결 만남 iris eyot 에코크릭 콘스타운 섬 저택">
+<span class="tag">집결</span><h3>🏝️ Iris Eyot에서 합류</h3><p>초반에는 각자 생존합니다.<br/><br/>준비가 되면 위 지도에 표시된 원형 섬으로 이동해<br/>다른 생존자들과 합류하세요.</p>
+<div class="tip">대형 저택과 습지로 둘러싸인 원형 지형이 보이면 제대로 찾아온 것입니다.</div></article>
+<article class="card" data-key="탈출 구조 헬기 무전 주파수 문서 최종목표">
+<span class="tag">최종 목표</span><h3>🚁 녹스 카운티를 탈출하세요</h3><p>엄보이드의 최종 목표는<br/>Iris Eyot 도착이 아닙니다.<br/><br/><b>최종 목표는 녹스 카운티 탈출입니다.</b></p>
+<div class="steps"><div>생존과 탐색을 이어가며 여러 파밍 루트를 통해 탈출 관련 문서와 단서를 찾습니다.</div><div>현재 회차의 탈출 위치와 구조대 무전 주파수를 알아냅니다.</div><div>팀원들과 장비, 탄약, 의료품, 차량을 준비합니다.</div><div>확인한 탈출 지점으로 이동해 구조대에 연락합니다.</div><div>구조가 올 때까지 발생하는 마지막 생존 상황을 버티고 탈출합니다.</div></div>
+<div class="tip">Iris Eyot은 모두가 모이는 중간 목표입니다. 합류한 뒤에는 함께 탈출 준비를 진행하세요.</div><figure class="guide-shot wide"><img alt="녹스 카운티 탈출 안내" src="images/site-image-07.jpg"/><figcaption>▲ 탈출 진행 안내 화면 예시</figcaption></figure>
+<figure class="guide-shot"><img alt="여러 파밍 루트를 통해 획득한 탈출 단서 쪽지" src="images/site-image-08.jpg"/><figcaption>▲ 탈출 단서 쪽지 예시 — 단서는 좀비 시체를 포함한 여러 파밍 루트를 통해 획득할 수 있습니다.</figcaption></figure></article>
+<article class="card" data-key="락픽 문 자물쇠 빠루 쇠지렛대 건물 진입">
+<span class="tag">진입</span><h3>🚪 잠긴 문도 열 수 있습니다</h3><p>잠긴 건물이나 차량은<br/>무조건 창문을 깨지 않아도 됩니다.<br/><br/><b>락픽</b>으로 자물쇠를 따거나<br/><b>쇠지렛대</b>로 강제 진입할 수 있습니다.</p>
+<div class="tip">조용히 들어가야 한다면 락픽을 우선하고, 빠르게 진입해야 한다면 쇠지렛대를 고려하세요.</div></article>
+<article class="card" data-key="특성 무작위 랜덤 리롤 캐릭터 생성">
+<span class="tag">캐릭터 생성</span><h3>🎲 특성은 무작위로 시작합니다</h3>
+<p>캐릭터 생성 시<br/><b>특성은 무작위 설정</b>으로 진행합니다.<br/><br/>처음 나온 결과가 마음에 들지 않는다면<br/><b>딱 1회만 다시 뽑기</b>할 수 있습니다.</p>
+<div class="steps"><div>첫 번째 무작위 특성 결과를 확인합니다.</div><div>그대로 시작하거나 1회만 다시 뽑습니다.</div><div>다시 뽑았다면 두 번째 결과로 그대로 시작합니다.</div></div>
+<div class="tip">🤝 현재는 서버에서 다시 뽑기 횟수를 따로 확인하지 않습니다. 모두 같은 조건으로 즐길 수 있도록 양심껏 1회만 사용해 주세요.</div>
+</article>
+<article class="card" data-key="특성 성장 캐릭터">
+<span class="tag">캐릭터</span><h3>📈 특성 변화 확인</h3><p>엄보이드에서는 기본 게임보다<br/>다양한 특성을 사용할 수 있습니다.<br/><br/>일부 특성은 플레이 방식과 성장에 영향을 주므로<br/>캐릭터 생성 시 설명을 확인하세요.</p></article>
+<article class="card" data-key="호드 이벤트 좀비 습격 랜덤">
+<span class="tag">위협</span><h3>🧟 갑작스러운 호드에 대비하세요</h3><p>안전해 보이는 상황에서도<br/>대규모 좀비 위협이 발생할 수 있습니다.<br/><br/>장거리 이동이나 거점 정비 때는<br/>항상 퇴로와 차량 상태를 확인하세요.</p></article>
+<article class="card" data-key="오류 버그 관리자 error magnifier">
+<span class="tag">도움말</span><h3>🛠️ 이상한 현상이 생기면</h3><p>오류가 발생하면 어떤 행동 직후 문제가 생겼는지 확인해 주세요.</p><div class="tip">가능하면 화면 우측 오류 숫자와 오류 내용을 함께 캡처해서 공유하면 원인을 찾기 쉽습니다.</div></article>
+</section>
+</div>
+<div class="panel" id="mods">
+<div class="notice"><b>📦 모드 목록</b><br/>게임 가이드에서는 몰입을 위해 모드 이름을 표시하지 않습니다. 설치된 모드의 이름이나 출처가 궁금할 때 이 탭을 확인하세요.</div>
+<h2 class="section-title">전체 모드 74개</h2>
+<p style="color:var(--muted);margin:-8px 0 16px">엄보이드에서 사용하는 모드는 이 탭에서만 확인할 수 있습니다.</p>
+<table class="modlist"><thead><tr><th>#</th><th>모드 이름</th><th>분류</th></tr></thead><tbody><tr><td>1</td><td>Fast Reload Speed [B42 / MP]</td><td>편의 / 게임플레이</td></tr><tr><td>2</td><td>Escape Knox County - Extraction mod Korean Patch</td><td>탈출</td></tr><tr><td>3</td><td>Escape Knox County</td><td>탈출</td></tr><tr><td>4</td><td>Iris Eyot [B42]</td><td>맵</td></tr><tr><td>5</td><td>inu's Simple Horde Mod [B42]</td><td>편의 / 게임플레이</td></tr><tr><td>6</td><td>Navigator | Navigation Mod for Project Zomboid B42</td><td>편의 / 게임플레이</td></tr><tr><td>7</td><td>Lifestyle: Hobbies</td><td>편의 / 게임플레이</td></tr><tr><td>8</td><td>Better Fire Extinguishers [B42] [SP &amp; MP]</td><td>편의 / 게임플레이</td></tr><tr><td>9</td><td>[B42] I Don't Need A Lighter</td><td>편의 / 게임플레이</td></tr><tr><td>10</td><td>[B42] Drag Bodies Faster</td><td>편의 / 게임플레이</td></tr><tr><td>11</td><td>[B42.20] Better Flashlights</td><td>편의 / 게임플레이</td></tr><tr><td>12</td><td>'93 Chevrolet Suburban / Silverado</td><td>차량</td></tr><tr><td>13</td><td>'90 Pierce Arrow Pumper and Ladder Trucks</td><td>차량</td></tr><tr><td>14</td><td>'89 Isuzu Trooper</td><td>차량</td></tr><tr><td>15</td><td>'80 MAN KAT1</td><td>차량</td></tr><tr><td>16</td><td>'63 Volkswagen Type 2 Van</td><td>차량</td></tr><tr><td>17</td><td>'49 Dodge Power Wagon Crew Cab</td><td>차량</td></tr><tr><td>18</td><td>Tidy Up Meister</td><td>편의 / 게임플레이</td></tr><tr><td>19</td><td>Cye's Push Doors! [SP/MP]</td><td>편의 / 게임플레이</td></tr><tr><td>20</td><td>'87 Ford B700/F700 Trucks</td><td>차량</td></tr><tr><td>21</td><td>Fast Reading [SP/MP] 42.20</td><td>편의 / 게임플레이</td></tr><tr><td>22</td><td>Rain Cleans Blood [B42.20 + MP]</td><td>편의 / 게임플레이</td></tr><tr><td>23</td><td>[B42.20]Zero Weight Keys</td><td>편의 / 게임플레이</td></tr><tr><td>24</td><td>[B42] Random Spawn Locations [SP/MP]</td><td>편의 / 게임플레이</td></tr><tr><td>25</td><td>They Knew [B42] - 42.19 Fix</td><td>감염 / 치료</td></tr><tr><td>26</td><td>They Knew [B42]</td><td>감염 / 치료</td></tr><tr><td>27</td><td>Unified Carry Weight Framework (UCWF)</td><td>필수 / 관리</td></tr><tr><td>28</td><td>More Traits [Legacy, read description]</td><td>특성 / 성장</td></tr><tr><td>29</td><td>Ping Items! Friends! 42.20 MP Official</td><td>편의 / 게임플레이</td></tr><tr><td>30</td><td>[B42.20+/MP] Bicycle!</td><td>차량</td></tr><tr><td>31</td><td>Swap It</td><td>편의 / 게임플레이</td></tr><tr><td>32</td><td>Trailers!</td><td>차량</td></tr><tr><td>33</td><td>'86 Oshkosh P19A + Military Trailers</td><td>차량</td></tr><tr><td>34</td><td>'78 AM General M35 Series Trucks</td><td>차량</td></tr><tr><td>35</td><td>'92 AM General M998 + M101A3 Cargo trailer</td><td>차량</td></tr><tr><td>36</td><td>'89 LAND ROVER Defender</td><td>차량</td></tr><tr><td>37</td><td>'04 Volkswagen Touran</td><td>차량</td></tr><tr><td>38</td><td>that DAMN Library</td><td>필수 / 관리</td></tr><tr><td>39</td><td>'89 Dodge Caravan</td><td>차량</td></tr><tr><td>40</td><td>Authentic Z</td><td>편의 / 게임플레이</td></tr><tr><td>41</td><td>Traits As Skills</td><td>특성 / 성장</td></tr><tr><td>42</td><td>Realistic Dashboard &amp; Gauges [MP]</td><td>차량</td></tr><tr><td>43</td><td>[B42.20] The Only Cure</td><td>감염 / 치료</td></tr><tr><td>44</td><td>Mod Update and Alert System</td><td>필수 / 관리</td></tr><tr><td>45</td><td>errorMagnifier</td><td>필수 / 관리</td></tr><tr><td>46</td><td>Mod Load Order Sorter [b42]</td><td>필수 / 관리</td></tr><tr><td>47</td><td>[B42] Mod Manager</td><td>필수 / 관리</td></tr><tr><td>48</td><td>Hx's 좀보이드 통합 번역</td><td>필수 / 관리</td></tr><tr><td>49</td><td>[B42+] Sandbox Options</td><td>필수 / 관리</td></tr><tr><td>50</td><td>[B42.20.3] Simple Belt Flashlight+ (Better Flashlights Compatible)</td><td>편의 / 게임플레이</td></tr><tr><td>51</td><td>Detailed Skill Tooltips</td><td>편의 / 게임플레이</td></tr><tr><td>52</td><td>Repair Any Clothes</td><td>편의 / 게임플레이</td></tr><tr><td>53</td><td>Common Sense B42.20 - Community Compatibility Fix</td><td>편의 / 게임플레이</td></tr><tr><td>54</td><td>PZLinux B42.17</td><td>편의 / 게임플레이</td></tr><tr><td>55</td><td>Neat Crafting [B42]</td><td>편의 / 게임플레이</td></tr><tr><td>56</td><td>Neat Building [B42]</td><td>편의 / 게임플레이</td></tr><tr><td>57</td><td>NeatUI Framework [B42]</td><td>필수 / 관리</td></tr><tr><td>58</td><td>CleanUI [B42]</td><td>편의 / 게임플레이</td></tr><tr><td>59</td><td>Clean HotBar [B42]</td><td>편의 / 게임플레이</td></tr><tr><td>60</td><td>Proximity Inventory B42.20+ | We are so back</td><td>편의 / 게임플레이</td></tr><tr><td>61</td><td>[42.20MP] GoM - Guns of Marz</td><td>총기</td></tr><tr><td>62</td><td>Hot Brass - Visible Casing Ejection</td><td>총기</td></tr><tr><td>63</td><td>Little Town - B42</td><td>맵</td></tr><tr><td>64</td><td>Constown (B42)</td><td>맵</td></tr><tr><td>65</td><td>Raven Creek B42</td><td>맵</td></tr><tr><td>66</td><td>Fort Waterfront B42</td><td>맵</td></tr><tr><td>67</td><td>Ashenwood B42 Unstable (with no custom tiles)</td><td>맵</td></tr><tr><td>68</td><td>AnruisiTown (Military Bastion)</td><td>맵</td></tr><tr><td>69</td><td>West Point Expansion B42</td><td>맵</td></tr><tr><td>70</td><td>Map All Known Fix [B42]</td><td>편의 / 지도</td></tr><tr><td>71</td><td>Neat Lockpicking</td><td>차량 / 잠금</td></tr><tr><td>72</td><td>Fitness &amp; Workout Overhaul</td><td>운동 / 성장</td></tr><tr><td>73</td><td>Alice's Weapon Sling</td><td>무기 / 편의</td></tr><tr><td>74</td><td>Guns of Marz: Attachment Workbench</td><td>총기 / 인터페이스</td></tr></tbody></table>
+</div>
+<div class="panel" id="patchnotes">
+<div class="patch-head">
+<div>
+<div class="eyebrow">UMBOID UPDATE</div>
+<h2 class="section-title" style="margin:7px 0 4px">2026.10.04 패치노트</h2>
+<p style="color:var(--muted);margin:0">오늘 적용한 모드 변경과 좀비 밸런스 조정 내역입니다.</p>
+</div>
+<div class="patch-date">2026.10.04</div>
+</div>
+<div class="patch-block">
+<h3>🧩 추가된 모드</h3>
+<div class="patch-grid"><article class="card patch-mod"><img alt="Fitness &amp; Workout Overhaul Steam 창작마당 이미지" loading="eager" src="images/fitness-workout.png"/><div class="patch-body"><h3>Fitness &amp; Workout Overhaul</h3><p>운동 성장 방식을 보완하고 벤치프레스와 러닝머신을 실제 운동 기구처럼 사용할 수 있게 합니다.</p><a class="patch-link" href="https://steamcommunity.com/sharedfiles/filedetails/?id=3729663486" rel="noopener" target="_blank">Steam 창작마당 보기 ↗</a></div></article><article class="card patch-mod"><img alt="Alice's Weapon Sling Steam 창작마당 이미지" loading="eager" src="images/alice-weapon-sling.png"/><div class="patch-body"><h3>Alice's Weapon Sling</h3><p>슬링을 이용해 총기와 근접무기를 휴대하고 빠르게 교체할 수 있습니다.</p><a class="patch-link" href="https://steamcommunity.com/sharedfiles/filedetails/?id=3775549570" rel="noopener" target="_blank">Steam 창작마당 보기 ↗</a></div></article><article class="card patch-mod"><img alt="Guns of Marz: Attachment Workbench Steam 창작마당 이미지" loading="eager" src="images/gom-attachment-workbench.png"/><div class="patch-body"><h3>Guns of Marz: Attachment Workbench</h3><p>Guns of Marz 전용 총기 모딩 UI를 추가합니다. 총기 슬롯, 장착 부품과 호환 부품을 한 화면에서 확인할 수 있습니다.</p><a class="patch-link" href="https://steamcommunity.com/sharedfiles/filedetails/?id=3798555914" rel="noopener" target="_blank">Steam 창작마당 보기 ↗</a></div></article></div>
+</div>
+<div class="patch-block">
+<h3>🗑️ 빠진 모드</h3>
+<div class="change-row"><div class="change-label remove">Easy Exercise</div><div class="change-text">운동 시스템을 Fitness &amp; Workout Overhaul로 교체하면서 제거했습니다.</div></div></div>
+<div class="patch-block">
+<h3>⚖️ 밸런스 패치</h3>
+<div class="balance-pills">
+<div class="balance-pill"><b>뛰는 좀비 5%</b><span>무작위 좀비 중 스프린터 비율을 5%로 설정했습니다.</span></div>
+<div class="balance-pill"><b>문 여는 좀비 5%</b><span>무작위 인지 설정에서 문을 사용할 수 있는 좀비 비율을 5%로 설정했습니다.</span></div>
+<div class="balance-pill"><b>좀비 리스폰 OFF</b><span>정리한 지역의 진행감이 유지되도록 기존 설정을 유지합니다.</span></div>
+</div>
+</div>
+</div>
+<footer>엄보이드 서버 가이드 · FINAL v3.10<br/>모드 구성 변경 시 내용도 함께 갱신합니다.</footer>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const search = document.getElementById('search');
+  const tabs = Array.from(document.querySelectorAll('.tab'));
+  const panels = Array.from(document.querySelectorAll('.panel'));
+  const cards = Array.from(document.querySelectorAll('#guide .card'));
+  const status = document.getElementById('searchStatus');
+  const noResults = document.getElementById('noResults');
+  const backToSearch = document.getElementById('backToSearch');
+
+  if (backToSearch) {
+    backToSearch.addEventListener('click', function () {
+      if (search) {
+        search.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        setTimeout(() => search.focus(), 350);
+      }
+    });
+    window.addEventListener('scroll', function () {
+      const searchBelowTop = search && search.getBoundingClientRect().bottom < 0;
+      backToSearch.style.display = searchBelowTop ? 'inline-flex' : 'none';
+    }, { passive: true });
+  }
+
+
+  function normalize(text) {
+    return (text || '').toLocaleLowerCase('ko-KR')
+      .replace(/\s+/g, '')
+      .replace(/[.,/#!$%^&*;:{}=\-_`~()[\]"'<>?]/g, '');
+  }
+
+  function activatePanel(id) {
+    tabs.forEach(t => t.classList.toggle('active', t.dataset.panel === id));
+    panels.forEach(p => p.classList.toggle('active', p.id === id));
+  }
+
+  function resetCards() {
+    cards.forEach(c => c.style.removeProperty('display'));
+  }
+
+  function searchGuide(raw) {
+    const q = normalize(raw);
+    if (!q) {
+      resetCards();
+      if (status) status.style.display = 'none';
+      if (noResults) noResults.style.display = 'none';
+      return;
+    }
+
+    let matches = [];
+    cards.forEach(card => {
+      const haystack = normalize(
+        card.textContent + ' ' +
+        (card.dataset.key || '') + ' ' +
+        (card.querySelector('h3')?.textContent || '') + ' ' +
+        (card.querySelector('.tag')?.textContent || '')
+      );
+      const match = haystack.includes(q);
+      card.style.setProperty('display', match ? '' : 'none', 'important');
+      if (match) matches.push(card);
+    });
+
+    // 검색어가 게임 가이드 카드에 있으면 자동으로 게임 가이드 탭으로 이동
+    if (matches.length) {
+      activatePanel('guide');
+      requestAnimationFrame(() => {
+        const first = matches[0];
+        const top = first.getBoundingClientRect().top + window.scrollY - 18;
+        window.scrollTo({ top, behavior: 'smooth' });
+        first.classList.add('search-hit');
+        setTimeout(() => first.classList.remove('search-hit'), 1400);
+      });
+    }
+
+    if (status) {
+      status.style.display = 'block';
+      status.textContent = `“${raw}” 검색 결과 ${matches.length}개`;
+    }
+    if (noResults) noResults.style.display = matches.length ? 'none' : 'block';
+    if (backToSearch) {
+      backToSearch.style.display =
+        (search && search.getBoundingClientRect().bottom < 0) ? 'inline-flex' : 'none';
+    }
+
+  }
+
+  if (search) {
+    search.addEventListener('input', () => searchGuide(search.value.trim()));
+    search.addEventListener('search', () => searchGuide(search.value.trim()));
+  }
+
+  tabs.forEach(tab => tab.addEventListener('click', function () {
+    activatePanel(tab.dataset.panel);
+    // 탭을 직접 누르면 검색 필터는 유지하되 검색창은 계속 사용할 수 있게 둠
+    if (status && tab.dataset.panel !== 'guide') status.style.display = 'none';
+    if (noResults && tab.dataset.panel !== 'guide') noResults.style.display = 'none';
+  }));
+});
+</script>
+<button aria-label="검색창으로 이동" id="backToSearch" title="검색창으로 이동" type="button">↑</button>
+</body></html>
