@@ -243,6 +243,21 @@ footer{color:#737d74;text-align:center;padding:54px 0 24px}@media(max-width:640p
 .map-update-block .map-update-summary{margin:2px 0 16px;color:var(--muted);line-height:1.6}
 .map-update-block .map-patch-grid{margin-top:8px}
 
+
+#mapTopBtn{
+  position:fixed;right:22px;bottom:22px;z-index:9999;
+  display:none;align-items:center;gap:7px;
+  padding:11px 14px;border:1px solid var(--line);border-radius:999px;
+  background:#202720;color:var(--text);font:inherit;font-weight:800;
+  box-shadow:0 8px 24px rgba(0,0,0,.35);cursor:pointer;
+}
+#mapTopBtn:hover{border-color:var(--accent);transform:translateY(-1px)}
+#mapTopBtn.show{display:flex}
+#mapTopBtn>span{font-size:.82rem}
+@media(max-width:600px){
+  #mapTopBtn{right:14px;bottom:14px;padding:11px 13px}
+}
+
 </style>
 </head>
 <body>
@@ -260,8 +275,8 @@ footer{color:#737d74;text-align:center;padding:54px 0 24px}@media(max-width:640p
 </div>
 <div class="tabs"><button class="tab active" data-panel="patchnotes">패치노트</button>
 <button class="tab" data-panel="guide">게임 가이드</button>
-<button class="tab" data-panel="mods">모드 목록</button>
-<button class="tab" data-panel="lootmap">🗺️ 지도</button></div>
+<button class="tab" data-panel="lootmap">🗺️ 지도</button>
+<button class="tab" data-panel="mods">모드 목록</button></div>
 <div class="panel" id="guide">
 <div class="notice"><b>📌 처음 접속한 분께</b><br/>모드 이름을 몰라도 괜찮습니다. 엄보이드에서 실제로 필요한 행동과 진행 방법만 정리했습니다.</div>
 <section class="goal">
@@ -578,4 +593,28 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 <button aria-label="검색창으로 이동" id="backToSearch" title="검색창으로 이동" type="button">↑</button>
+<button id="mapTopBtn" type="button" aria-label="지도 맨 위로">↑<span>맨 위로</span></button>
+
+<script>
+document.addEventListener('DOMContentLoaded', function(){
+  const btn=document.getElementById('mapTopBtn');
+  if(!btn) return;
+  function isMapActive(){
+    const p=document.getElementById('lootmap');
+    return !!(p && p.classList.contains('active'));
+  }
+  function refreshMapTop(){
+    btn.classList.toggle('show', isMapActive() && window.scrollY > 420);
+  }
+  window.addEventListener('scroll', refreshMapTop, {passive:true});
+  document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click',()=>setTimeout(refreshMapTop,0)));
+  btn.addEventListener('click',()=>{
+    const p=document.getElementById('lootmap');
+    if(p) p.scrollIntoView({behavior:'smooth',block:'start'});
+    else window.scrollTo({top:0,behavior:'smooth'});
+  });
+  refreshMapTop();
+});
+</script>
+
 </body></html>
