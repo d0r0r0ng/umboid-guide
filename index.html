@@ -247,18 +247,32 @@ footer{color:#737d74;text-align:center;padding:54px 0 24px}@media(max-width:640p
 
 
 
-#sectionTopBtn{
-  position:fixed;right:22px;bottom:22px;z-index:9999;
+
+
+
+#allTopBtn{
+  position:fixed;right:22px;bottom:22px;z-index:99999;
   display:none;width:46px;height:46px;padding:0;
   align-items:center;justify-content:center;
   border:1px solid var(--line);border-radius:50%;
   background:#202720;color:var(--text);font:inherit;
   font-size:22px;font-weight:900;line-height:1;
-  box-shadow:0 8px 24px rgba(0,0,0,.35);cursor:pointer;
+  box-shadow:0 8px 24px rgba(0,0,0,.38);cursor:pointer;
 }
-#sectionTopBtn:hover{border-color:var(--accent);transform:translateY(-1px)}
-#sectionTopBtn.show{display:flex}
-@media(max-width:600px){#sectionTopBtn{right:14px;bottom:14px;width:44px;height:44px}}
+#allTopBtn.show{display:flex}
+#allTopBtn:hover{border-color:var(--accent);transform:translateY(-1px)}
+.mod-search-wrap{margin:12px 0 16px}
+#modSearch{
+  width:100%;max-width:420px;box-sizing:border-box;
+  padding:10px 12px;border:1px solid var(--line);border-radius:10px;
+  background:#111612;color:var(--text);font:inherit;font-size:.9rem;outline:none;
+}
+#modSearch:focus{border-color:var(--accent)}
+#modSearchCount{margin:7px 2px 0;color:var(--muted);font-size:.8rem}
+@media(max-width:600px){
+  #allTopBtn{right:14px;bottom:14px;width:44px;height:44px}
+  #modSearch{max-width:none}
+}
 
 </style>
 </head>
@@ -365,6 +379,11 @@ footer{color:#737d74;text-align:center;padding:54px 0 24px}@media(max-width:640p
 <div class="panel" id="mods">
 <div class="notice"><b>📦 모드 목록</b><br/>게임 가이드에서는 몰입을 위해 모드 이름을 표시하지 않습니다. 설치된 모드의 이름이나 출처가 궁금할 때 이 탭을 확인하세요.</div>
 <h2 class="section-title">전체 모드 74개</h2>
+<div class="mod-search-wrap">
+  <input id="modSearch" type="search" placeholder="모드 이름 검색..." autocomplete="off" />
+  <div id="modSearchCount"></div>
+</div>
+
 <p style="color:var(--muted);margin:-8px 0 16px">엄보이드에서 사용하는 모드는 이 탭에서만 확인할 수 있습니다.</p>
 <table class="modlist"><thead><tr><th>#</th><th>모드 이름</th><th>분류</th></tr></thead><tbody><tr><td>1</td><td>Fast Reload Speed [B42 / MP]</td><td>편의 / 게임플레이</td></tr><tr><td>2</td><td>Escape Knox County - Extraction mod Korean Patch</td><td>탈출</td></tr><tr><td>3</td><td>Escape Knox County</td><td>탈출</td></tr><tr><td>4</td><td>Iris Eyot [B42]</td><td>맵</td></tr><tr><td>5</td><td>inu's Simple Horde Mod [B42]</td><td>편의 / 게임플레이</td></tr><tr><td>6</td><td>Navigator | Navigation Mod for Project Zomboid B42</td><td>편의 / 게임플레이</td></tr><tr><td>7</td><td>Lifestyle: Hobbies</td><td>편의 / 게임플레이</td></tr><tr><td>8</td><td>Better Fire Extinguishers [B42] [SP &amp; MP]</td><td>편의 / 게임플레이</td></tr><tr><td>9</td><td>[B42] I Don't Need A Lighter</td><td>편의 / 게임플레이</td></tr><tr><td>10</td><td>[B42] Drag Bodies Faster</td><td>편의 / 게임플레이</td></tr><tr><td>11</td><td>[B42.20] Better Flashlights</td><td>편의 / 게임플레이</td></tr><tr><td>12</td><td>'93 Chevrolet Suburban / Silverado</td><td>차량</td></tr><tr><td>13</td><td>'90 Pierce Arrow Pumper and Ladder Trucks</td><td>차량</td></tr><tr><td>14</td><td>'89 Isuzu Trooper</td><td>차량</td></tr><tr><td>15</td><td>'80 MAN KAT1</td><td>차량</td></tr><tr><td>16</td><td>'63 Volkswagen Type 2 Van</td><td>차량</td></tr><tr><td>17</td><td>'49 Dodge Power Wagon Crew Cab</td><td>차량</td></tr><tr><td>18</td><td>Tidy Up Meister</td><td>편의 / 게임플레이</td></tr><tr><td>19</td><td>Cye's Push Doors! [SP/MP]</td><td>편의 / 게임플레이</td></tr><tr><td>20</td><td>'87 Ford B700/F700 Trucks</td><td>차량</td></tr><tr><td>21</td><td>Fast Reading [SP/MP] 42.20</td><td>편의 / 게임플레이</td></tr><tr><td>22</td><td>Rain Cleans Blood [B42.20 + MP]</td><td>편의 / 게임플레이</td></tr><tr><td>23</td><td>[B42.20]Zero Weight Keys</td><td>편의 / 게임플레이</td></tr><tr><td>24</td><td>[B42] Random Spawn Locations [SP/MP]</td><td>편의 / 게임플레이</td></tr><tr><td>25</td><td>They Knew [B42] - 42.19 Fix</td><td>감염 / 치료</td></tr><tr><td>26</td><td>They Knew [B42]</td><td>감염 / 치료</td></tr><tr><td>27</td><td>Unified Carry Weight Framework (UCWF)</td><td>필수 / 관리</td></tr><tr><td>28</td><td>More Traits [Legacy, read description]</td><td>특성 / 성장</td></tr><tr><td>29</td><td>Ping Items! Friends! 42.20 MP Official</td><td>편의 / 게임플레이</td></tr><tr><td>30</td><td>[B42.20+/MP] Bicycle!</td><td>차량</td></tr><tr><td>31</td><td>Swap It</td><td>편의 / 게임플레이</td></tr><tr><td>32</td><td>Trailers!</td><td>차량</td></tr><tr><td>33</td><td>'86 Oshkosh P19A + Military Trailers</td><td>차량</td></tr><tr><td>34</td><td>'78 AM General M35 Series Trucks</td><td>차량</td></tr><tr><td>35</td><td>'92 AM General M998 + M101A3 Cargo trailer</td><td>차량</td></tr><tr><td>36</td><td>'89 LAND ROVER Defender</td><td>차량</td></tr><tr><td>37</td><td>'04 Volkswagen Touran</td><td>차량</td></tr><tr><td>38</td><td>that DAMN Library</td><td>필수 / 관리</td></tr><tr><td>39</td><td>'89 Dodge Caravan</td><td>차량</td></tr><tr><td>40</td><td>Authentic Z</td><td>편의 / 게임플레이</td></tr><tr><td>41</td><td>Traits As Skills</td><td>특성 / 성장</td></tr><tr><td>42</td><td>Realistic Dashboard &amp; Gauges [MP]</td><td>차량</td></tr><tr><td>43</td><td>[B42.20] The Only Cure</td><td>감염 / 치료</td></tr><tr><td>44</td><td>Mod Update and Alert System</td><td>필수 / 관리</td></tr><tr><td>45</td><td>errorMagnifier</td><td>필수 / 관리</td></tr><tr><td>46</td><td>Mod Load Order Sorter [b42]</td><td>필수 / 관리</td></tr><tr><td>47</td><td>[B42] Mod Manager</td><td>필수 / 관리</td></tr><tr><td>48</td><td>Hx's 좀보이드 통합 번역</td><td>필수 / 관리</td></tr><tr><td>49</td><td>[B42+] Sandbox Options</td><td>필수 / 관리</td></tr><tr><td>50</td><td>[B42.20.3] Simple Belt Flashlight+ (Better Flashlights Compatible)</td><td>편의 / 게임플레이</td></tr><tr><td>51</td><td>Detailed Skill Tooltips</td><td>편의 / 게임플레이</td></tr><tr><td>52</td><td>Repair Any Clothes</td><td>편의 / 게임플레이</td></tr><tr><td>53</td><td>Common Sense B42.20 - Community Compatibility Fix</td><td>편의 / 게임플레이</td></tr><tr><td>54</td><td>PZLinux B42.17</td><td>편의 / 게임플레이</td></tr><tr><td>55</td><td>Neat Crafting [B42]</td><td>편의 / 게임플레이</td></tr><tr><td>56</td><td>Neat Building [B42]</td><td>편의 / 게임플레이</td></tr><tr><td>57</td><td>NeatUI Framework [B42]</td><td>필수 / 관리</td></tr><tr><td>58</td><td>CleanUI [B42]</td><td>편의 / 게임플레이</td></tr><tr><td>59</td><td>Clean HotBar [B42]</td><td>편의 / 게임플레이</td></tr><tr><td>60</td><td>Proximity Inventory B42.20+ | We are so back</td><td>편의 / 게임플레이</td></tr><tr><td>61</td><td>[42.20MP] GoM - Guns of Marz</td><td>총기</td></tr><tr><td>62</td><td>Hot Brass - Visible Casing Ejection</td><td>총기</td></tr><tr><td>63</td><td>Little Town - B42</td><td>맵</td></tr><tr><td>64</td><td>Constown (B42)</td><td>맵</td></tr><tr><td>65</td><td>Raven Creek B42</td><td>맵</td></tr><tr><td>66</td><td>Fort Waterfront B42</td><td>맵</td></tr><tr><td>67</td><td>Ashenwood B42 Unstable (with no custom tiles)</td><td>맵</td></tr><tr><td>68</td><td>AnruisiTown (Military Bastion)</td><td>맵</td></tr><tr><td>69</td><td>West Point Expansion B42</td><td>맵</td></tr><tr><td>70</td><td>Map All Known Fix [B42]</td><td>편의 / 지도</td></tr><tr><td>71</td><td>Neat Lockpicking</td><td>차량 / 잠금</td></tr><tr><td>72</td><td>Fitness &amp; Workout Overhaul</td><td>운동 / 성장</td></tr><tr><td>73</td><td>Alice's Weapon Sling</td><td>무기 / 편의</td></tr><tr><td>74</td><td>Guns of Marz: Attachment Workbench</td><td>총기 / 인터페이스</td></tr></tbody></table>
 </div>
@@ -595,38 +614,43 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 <button aria-label="검색창으로 이동" id="backToSearch" title="검색창으로 이동" type="button">↑</button>
-<button id="sectionTopBtn" type="button" aria-label="현재 탭 맨 위로">↑</button>
+<button id="allTopBtn" type="button" aria-label="맨 위로">↑</button>
 
 <script>
 document.addEventListener('DOMContentLoaded', function(){
-  const btn=document.getElementById('sectionTopBtn');
-  const supported=new Set(['guide','lootmap']);
+  const topBtn=document.getElementById('allTopBtn');
 
-  function activePanel(){
-    return document.querySelector('.panel.active');
+  function refreshTopBtn(){
+    topBtn.classList.toggle('show', window.scrollY > 350);
   }
-  function refreshTopButton(){
-    const p=activePanel();
-    const ok=p && supported.has(p.id);
-    btn.classList.toggle('show', !!ok && window.scrollY > 350);
-  }
-
-  window.addEventListener('scroll', refreshTopButton, {passive:true});
-
+  window.addEventListener('scroll', refreshTopBtn, {passive:true});
   document.querySelectorAll('.tab').forEach(tab=>{
-    tab.addEventListener('click', ()=>{
-      setTimeout(refreshTopButton, 30);
-    });
+    tab.addEventListener('click', ()=>setTimeout(refreshTopBtn, 20));
   });
-
-  btn.addEventListener('click', ()=>{
-    const p=activePanel();
-    if(!p || !supported.has(p.id)) return;
-    const y=p.getBoundingClientRect().top + window.scrollY - 12;
-    window.scrollTo({top:y,behavior:'smooth'});
+  topBtn.addEventListener('click', ()=>{
+    window.scrollTo({top:0,behavior:'smooth'});
   });
+  refreshTopBtn();
 
-  refreshTopButton();
+  const input=document.getElementById('modSearch');
+  const count=document.getElementById('modSearchCount');
+  const modsPanel=document.getElementById('mods');
+  if(input && modsPanel){
+    // 현재 모드 목록 구조의 각 행을 검색 대상으로 사용
+    const rows=[...modsPanel.querySelectorAll('tbody tr')];
+    function runModSearch(){
+      const q=input.value.trim().toLowerCase();
+      let shown=0;
+      rows.forEach(row=>{
+        const ok=!q || row.textContent.toLowerCase().includes(q);
+        row.style.display=ok?'':'none';
+        if(ok) shown++;
+      });
+      count.textContent=q ? `${shown}개 모드 검색됨` : `전체 ${rows.length}개 모드`;
+    }
+    input.addEventListener('input', runModSearch);
+    runModSearch();
+  }
 });
 </script>
 
